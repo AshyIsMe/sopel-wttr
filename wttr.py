@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 
 from urllib.parse import quote
-import sopel
+#import sopel
+from sopel import module
 import subprocess
 import sys
 
 
 def wttr(location):
-    c = "curl -s wttr.in/" + quote(location) + "?0TQ"
-    r = subprocess.run(c, shell=True, stdout=subprocess.PIPE)
+    u = "wttr.in/" + quote(location) + "?0TQ"
+    r = subprocess.run(['/usr/bin/env', 'curl', '-s', u], stdout=subprocess.PIPE)
     l = r.stdout.decode("utf-8").split("\n")
     w = " ".join([s[16:].strip() for s in l])
-    return w + " https://" + c[8:]
+    return w + " https://" + u
 
 
-@sopel.module.commands("wttr", "weather")
+@module.commands("wttr", "weather")
 def sopel_wttr(bot, trigger):
     l = trigger.group(2)
     if l is None:
@@ -25,7 +26,7 @@ def sopel_wttr(bot, trigger):
 
     bot.reply(wttr(l))
 
-@sopel.module.commands("setlocation")
+@module.commands("setlocation")
 def sopel_wttr_setlocation(bot, trigger):
     l = trigger.group(2)
     if l is None:
