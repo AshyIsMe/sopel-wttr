@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 
-from urllib.parse import quote
-#import sopel
 from sopel import module
-import subprocess
+from urllib.parse import quote
+import requests
 import sys
 
 
 def wttr(location):
-    u = "wttr.in/" + quote(location) + "?0TQ"
-    r = subprocess.run(['/usr/bin/env', 'curl', '-s', u], stdout=subprocess.PIPE)
-    l = r.stdout.decode("utf-8").split("\n")
-    w = " ".join([s[16:].strip() for s in l])
-    return w + " https://" + u
+    u = "https://wttr.in/" + quote(location) + "?0TQ"
+    try:
+        r = requests.get(u)
+        l = r.text.split('\n')
+        w = " ".join([s[16:].strip() for s in l])
+        return w + " " + u
+    except:
+        return u
 
 
 @module.commands("wttr", "weather")
