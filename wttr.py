@@ -10,11 +10,13 @@ def wttr(location):
     u = "https://wttr.in/" + quote(location) + "?0TQ"
     try:
         r = requests.get(u)
-        l = r.text.split('\n')
-        w = " ".join([s[16:].strip() for s in l])
-        return w + " " + u
+        if r.status_code == 200:
+            l = r.text.split('\n')
+            w = " ".join([s[16:].strip() for s in l])
+            return w + " " + u
     except:
-        return u
+        pass
+    return u
 
 
 @module.commands("wttr", "weather")
